@@ -24,7 +24,7 @@ const MOCK_TRIPS: Trip[] = Array.from({ length: 20 }).map((_, i) => {
   const dateISO = date.toISOString().slice(0, 10);
   return {
     id: String(i + 1),
-    route: `Terminal A → Terminal B`;
+    route: `Terminal A → Terminal B`,
     dateISO,
     time: `${8 + (i % 8)}:00`,
     capacityPassengers: 300,
