@@ -31,16 +31,15 @@ export default function TelaLogin() {
 
   return (
     <View style={styles.container}>
-      
-      {/* Logo / Nome do app */}
+    
       <Text style={styles.logo}>FerryBoat</Text>
       <Text style={styles.subtitle}>Conectando você ao seu destino</Text>
 
-      {/* Alternadores (Criar Conta / Entrar) */}
+      {/*Alternador*/}
       <View style={styles.switchContainer}>
         <TouchableOpacity
           style={[styles.switchButton]}
-          onPress={() => router.push("/create-account")}
+          onPress={() => router.push("/criar-conta")}
         >
           <Text style={styles.switchText}>Criar Conta</Text>
         </TouchableOpacity>
