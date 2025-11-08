@@ -11,44 +11,64 @@ export default function CreateAccountScreen() {
 
   function handleCreateAccount() {
     console.log("Criar conta:", { name, emailCpf, password });
-
-    // Aqui futuramente chamar API
-    router.replace("/login");
+    // futuramente chamar API aqui
+    router.replace("/login/Login");
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Criar Conta</Text>
+      <View style={styles.hero}>
+        <Text style={styles.logo}>Vai de Ferry</Text>
+        <Text style={styles.subtitle}>Conectando você ao seu destino</Text>
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nome completo"
-        value={name}
-        onChangeText={setName}
-      />
+      <View style={styles.overlayContainer}>
+        <View style={styles.switchContainer}>
+          <TouchableOpacity style={styles.switchButton}>
+            <Text style={styles.switchTextSelected}>Criar Conta</Text>
+          </TouchableOpacity>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email ou CPF"
-        value={emailCpf}
-        onChangeText={setEmailCpf}
-      />
+          <TouchableOpacity
+            style={styles.switchButton}
+            onPress={() => router.push("/login/Login")}
+          >
+            <Text style={styles.switchText}>Entrar</Text>
+          </TouchableOpacity>
+        </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Nome completo"
+          placeholderTextColor="#7a8a97"
+          value={name}
+          onChangeText={setName}
+        />
 
-      <TouchableOpacity style={styles.button} onPress={handleCreateAccount}>
-        <Text style={styles.buttonText}>Cadastrar</Text>
-      </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder="Email ou CPF"
+          placeholderTextColor="#7a8a97"
+          value={emailCpf}
+          onChangeText={setEmailCpf}
+        />
 
-      <TouchableOpacity onPress={() => router.replace("/Login")}>
-        <Text style={styles.backToLogin}>Já possui conta? Entrar</Text>
-      </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          placeholderTextColor="#7a8a97"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+
+        <TouchableOpacity style={styles.primaryButton} onPress={handleCreateAccount}>
+          <Text style={styles.primaryButtonText}>Cadastrar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => router.push("/login/Login")}>
+          <Text style={styles.footer}>Já possui conta? Entrar</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -56,39 +76,93 @@ export default function CreateAccountScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#0F4C75",
   },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 40,
+  hero: {
+    paddingTop: 80,
+    paddingBottom: 24,
+    alignItems: "center",
+  },
+  logo: {
+    color: "#fff",
+    fontSize: 34,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+  },
+  subtitle: {
+    color: "rgba(255,255,255,0.85)",
+    marginTop: 6,
+    fontSize: 14,
+  },
+  overlayContainer: {
+    flex: 1,
+    backgroundColor: "rgba(255,255,255,0.98)",
+    marginTop: -10,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingVertical: 28,
+    paddingHorizontal: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  switchContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 18,
+    alignItems: "center",
+  },
+  switchButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    marginHorizontal: 6,
+  },
+  switchText: {
+    color: "#8b98a6",
+    fontSize: 16,
+  },
+  switchTextSelected: {
+    color: "#0F4C75",
+    fontSize: 16,
+    fontWeight: "700",
   },
   input: {
-    backgroundColor: "#F2F2F2",
-    borderRadius: 8,
+    backgroundColor: "#f6fbff",
+    borderRadius: 12,
     padding: 14,
     fontSize: 16,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#e6f0fa",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  button: {
-    backgroundColor: "#007aff",
+  primaryButton: {
+    backgroundColor: "#0F4C75",
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  buttonText: {
+  primaryButtonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "700",
   },
-  backToLogin: {
+  footer: {
     textAlign: "center",
-    marginTop: 20,
-    color: "#007aff",
+    marginTop: 18,
+    color: "#6d7b86",
+    fontSize: 14,
   },
 });
-

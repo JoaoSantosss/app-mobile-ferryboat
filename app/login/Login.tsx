@@ -10,7 +10,7 @@ export default function TelaLogin() {
   function handleLogin() {
     console.log("Login attempted:", emailCpf, password);
     router.replace("/(tabs)");
-    // depois chamar a API
+// depois chamar a API
 
 //     async function handleLogin() {
 //   const response = await fetch("http://BACKEND/login", {
@@ -31,50 +31,50 @@ export default function TelaLogin() {
 
   return (
     <View style={styles.container}>
-    
-      <Text style={styles.logo}>FerryBoat</Text>
-      <Text style={styles.subtitle}>Conectando você ao seu destino</Text>
+      <View style={styles.hero}>
+        <Text style={styles.logo}>Vai de Ferry</Text>
+        <Text style={styles.subtitle}>Conectando você ao seu destino</Text>
+      </View>
+	{/*Alternador*/}
+      <View style={styles.overlayContainer}>
+        <View style={styles.switchContainer}>
+          <TouchableOpacity
+            style={styles.switchButton}
+            onPress={() => router.push("/criar-conta/criar-conta")}
+          >
+            <Text style={styles.switchText}>Criar Conta</Text>
+          </TouchableOpacity>
 
-      {/*Alternador*/}
-      <View style={styles.switchContainer}>
-        <TouchableOpacity
-          style={[styles.switchButton]}
-          onPress={() => router.push("/criar-conta")}
-        >
-          <Text style={styles.switchText}>Criar Conta</Text>
+          <TouchableOpacity style={styles.switchButtonSelected}>
+            <Text style={styles.switchTextSelected}>Entrar</Text>
+          </TouchableOpacity>
+        </View>
+	{/* Inputs */}
+        <TextInput
+          style={styles.input}
+          placeholder="Email ou CPF"
+          placeholderTextColor="#7a8a97"
+          value={emailCpf}
+          onChangeText={setEmailCpf}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          placeholderTextColor="#7a8a97"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+	{/* Botão Entrar */}
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>Entrar</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.switchButtonSelected]}>
-          <Text style={styles.switchTextSelected}>Entrar</Text>
+	{/* Rodapé */}
+        <TouchableOpacity>
+          <Text style={styles.footer}>Esqueceu a senha?</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Inputs */}
-      <TextInput
-        style={styles.input}
-        placeholder="Email ou CPF"
-        value={emailCpf}
-        onChangeText={setEmailCpf}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      {/* Botão Entrar */}
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Entrar</Text>
-      </TouchableOpacity>
-
-      {/* Rodapé */}
-      <Text style={styles.footer}>
-        Esqueceu a senha? Contate o suporte.
-      </Text>
-
     </View>
   );
 }
@@ -82,68 +82,102 @@ export default function TelaLogin() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#0F4C75", // fundo principal (pode animar para "descer")
+  },
+  hero: {
+    paddingTop: 80,
+    paddingBottom: 24,
+    alignItems: "center",
   },
   logo: {
-    fontSize: 36,
-    fontWeight: "bold",
-    textAlign: "center",
+    color: "#fff",
+    fontSize: 34,
+    fontWeight: "800",
+    letterSpacing: 0.5,
   },
   subtitle: {
-    textAlign: "center",
-    marginBottom: 40,
-    color: "#555",
+    color: "rgba(255,255,255,0.85)",
+    marginTop: 6,
+    fontSize: 14,
+  },
+  overlayContainer: {
+    flex: 1,
+    backgroundColor: "rgba(255,255,255,0.98)",
+    marginTop: -10,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingVertical: 28,
+    paddingHorizontal: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    elevation: 8,
   },
   switchContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: 24,
+    marginBottom: 18,
+    alignItems: "center",
   },
   switchButton: {
     paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
     borderBottomWidth: 2,
     borderBottomColor: "transparent",
+    marginHorizontal: 6,
   },
   switchButtonSelected: {
     paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
     borderBottomWidth: 2,
-    borderBottomColor: "#007aff",
+    borderBottomColor: "#0F4C75",
+    marginHorizontal: 6,
   },
   switchText: {
-    color: "#999",
+    color: "#8b98a6",
     fontSize: 16,
   },
   switchTextSelected: {
-    color: "#007aff",
+    color: "#0F4C75",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "700",
   },
   input: {
-    backgroundColor: "#F2F2F2",
-    borderRadius: 8,
+    backgroundColor: "#f6fbff",
+    borderRadius: 12,
     padding: 14,
     fontSize: 16,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#e6f0fa",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 2,
+    elevation: 2,
   },
   loginButton: {
-    backgroundColor: "#007aff",
+    backgroundColor: "#0F4C75",
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+    elevation: 5,
   },
   loginButtonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "700",
   },
   footer: {
     textAlign: "center",
-    marginTop: 20,
-    color: "#888",
+    marginTop: 18,
+    color: "#6d7b86",
+    fontSize: 14,
   },
 });
