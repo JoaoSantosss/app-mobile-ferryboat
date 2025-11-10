@@ -6,28 +6,88 @@ export default function TelaLogin() {
   const router = useRouter();
   const [emailCpf, setEmailCpf] = useState("");
   const [password, setPassword] = useState("");
+  const [emailCpfError, setEmailCpfError] = useState("");
+  const [error, setError] = useState("");
+
+  function isValidEmail(value: string) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    return re.test(value);
+  }
+
+  function isValidCPF(cpf: string) {
+    cpf = cpf.replace(/\D/g, "");
+    if (cpf.length !== 11) return false;
+    if (/^(\d)\1+$/.test(cpf)) return false;
+
+    const calc = (t: number) => {
+      let sum = 0;
+      for (let i = 0; i < t - 1; i++) sum += parseInt(cpf[i]) * (t - i);
+      const d = (sum * 10) % 11;
+      return d === 10 ? 0 : d;
+    };
+    return calc(10) === parseInt(cpf[9]) && calc(11) === parseInt(cpf[10]);
+  }
+
+  function validateEmailCpf(value: string) {
+    if (!value) {
+      setEmailCpfError("");
+      return false;
+    }
+
+    if (value.includes("@")) {
+      if (isValidEmail(value)) {
+        setEmailCpfError("");
+        return true;
+      } else {
+        setEmailCpfError("Email inválido");
+        return false;
+      }
+    } else {
+      const digits = value.replace(/\D/g, "");
+      if (digits.length === 0) {
+        setEmailCpfError("");
+        return false;
+      }
+      if (digits.length !== 11) {
+        setEmailCpfError("CPF deve ter 11 dígitos");
+        return false;
+      }
+      if (!isValidCPF(digits)) {
+        setEmailCpfError("CPF inválido");
+        return false;
+      }
+      setEmailCpfError("");
+      return true;
+    }
+  }
 
   function handleLogin() {
+    setError("");
+
+    if (!emailCpf.trim() || !password) {
+      setError("Preencha todos os campos.");
+      return;
+    }
+
+    if (!validateEmailCpf(emailCpf)) {
+      setError("Email ou CPF inválido.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
     console.log("Login attempted:", emailCpf, password);
     router.replace("/(tabs)");
-// depois chamar a API
-
-//     async function handleLogin() {
-//   const response = await fetch("http://BACKEND/login", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ emailCpf, password }),
-//   });
-
-//   const data = await response.json();
-
-//   if (data.authenticated) {
-//     router.push("/trips");
-//   } else {
-//     alert("Credenciais inválidas");
-//   }
-// }
   }
+
+  const isFormValid =
+    emailCpf.trim().length > 0 &&
+    password.length >= 6 &&
+    emailCpfError === "" &&
+    validateEmailCpf(emailCpf);
 
   return (
     <View style={styles.container}>
@@ -35,7 +95,7 @@ export default function TelaLogin() {
         <Text style={styles.logo}>Vai de Ferry</Text>
         <Text style={styles.subtitle}>Conectando você ao seu destino</Text>
       </View>
-	{/*Alternador*/}
+
       <View style={styles.overlayContainer}>
         <View style={styles.switchContainer}>
           <TouchableOpacity
@@ -49,14 +109,18 @@ export default function TelaLogin() {
             <Text style={styles.switchTextSelected}>Entrar</Text>
           </TouchableOpacity>
         </View>
-	{/* Inputs */}
+
         <TextInput
           style={styles.input}
           placeholder="Email ou CPF"
           placeholderTextColor="#7a8a97"
           value={emailCpf}
-          onChangeText={setEmailCpf}
+          onChangeText={(v) => {
+            setEmailCpf(v);
+            validateEmailCpf(v);
+          }}
         />
+        {emailCpfError ? <Text style={styles.fieldError}>{emailCpfError}</Text> : null}
 
         <TextInput
           style={styles.input}
@@ -66,11 +130,17 @@ export default function TelaLogin() {
           value={password}
           onChangeText={setPassword}
         />
-	{/* Botão Entrar */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        <TouchableOpacity 
+          style={[styles.loginButton, !isFormValid && styles.disabledButton]}
+          onPress={handleLogin}
+          disabled={!isFormValid}
+        >
           <Text style={styles.loginButtonText}>Entrar</Text>
         </TouchableOpacity>
-	{/* Rodapé */}
+
         <TouchableOpacity>
           <Text style={styles.footer}>Esqueceu a senha?</Text>
         </TouchableOpacity>
@@ -78,6 +148,7 @@ export default function TelaLogin() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -180,4 +251,19 @@ const styles = StyleSheet.create({
     color: "#6d7b86",
     fontSize: 14,
   },
-});
+  fieldError: {
+    color: "#c0392b",
+    fontSize: 13,
+    marginBottom: 8,
+    marginLeft: 6,
+  },
+  errorText: {
+    color: "#c0392b",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  disabledButton: {
+    backgroundColor: "#6b8aa6",
+    opacity: 0.9,
+  },
+})

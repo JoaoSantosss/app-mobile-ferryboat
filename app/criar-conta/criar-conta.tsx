@@ -5,15 +5,102 @@ import { useRouter } from "expo-router";
 export default function CreateAccountScreen() {
   const router = useRouter();
 
-  const [name, setName] = useState("");
+  const [nome, setName] = useState("");
   const [emailCpf, setEmailCpf] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [emailCpfError, setEmailCpfError] = useState("");
 
-  function handleCreateAccount() {
-    console.log("Criar conta:", { name, emailCpf, password });
+  function EmailValido(value: string) {
+    const re =
+      /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    return re.test(value);
+  }
+
+  function CPFValido(cpf: string) {
+    cpf = cpf.replace(/\D/g, "");
+    if (cpf.length !== 11) return false;
+    if (/^(\d)\1+$/.test(cpf)) return false; // all same digits
+
+    const calc = (t: number) => {
+      let sum = 0;
+      for (let i = 0; i < t - 1; i++) sum += parseInt(cpf[i]) * (t - i);
+      const d = (sum * 10) % 11;
+      return d === 10 ? 0 : d;
+    };
+    return calc(10) === parseInt(cpf[9]) && calc(11) === parseInt(cpf[10]);
+  }
+
+  function ValidoEmailCpf(value: string) {
+    if (!value) {
+      setEmailCpfError("");
+      return false;
+    }
+
+    if (value.includes("@")) {
+      if (EmailValido(value)) {
+        setEmailCpfError("");
+        return true;
+      } else {
+        setEmailCpfError("Email inválido");
+        return false;
+      }
+    } else {
+      const digits = value.replace(/\D/g, "");
+      if (digits.length === 0) {
+        setEmailCpfError("");
+        return false;
+      }
+      if (digits.length !== 11) {
+        setEmailCpfError("CPF deve ter 11 dígitos");
+        return false;
+      }
+      if (!CPFValido(digits)) {
+        setEmailCpfError("CPF inválido");
+        return false;
+      }
+      setEmailCpfError("");
+      return true;
+    }
+  }
+
+  function CriarContaValida() {
+    setError("");
+
+    if (!nome.trim() || !emailCpf.trim() || !password) {
+      setError("Preencha todos os campos.");
+      return;
+    }
+
+    if (!ValidoEmailCpf(emailCpf)) {
+      setError("Preencha um Email ou CPF válido.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+
+    console.log("Criar conta:", { nome, emailCpf, password });
     // futuramente chamar API aqui
     router.replace("/login/Login");
   }
+
+  const isFormValid =
+    nome.trim().length > 0 &&
+    emailCpf.trim().length > 0 &&
+    password.length >= 6 &&
+    confirmPassword.length >= 6 &&
+    password === confirmPassword &&
+    emailCpfError === "" &&
+    ValidoEmailCpf(emailCpf);
 
   return (
     <View style={styles.container}>
@@ -40,7 +127,7 @@ export default function CreateAccountScreen() {
           style={styles.input}
           placeholder="Nome completo"
           placeholderTextColor="#7a8a97"
-          value={name}
+          value={nome}
           onChangeText={setName}
         />
 
@@ -49,8 +136,12 @@ export default function CreateAccountScreen() {
           placeholder="Email ou CPF"
           placeholderTextColor="#7a8a97"
           value={emailCpf}
-          onChangeText={setEmailCpf}
+          onChangeText={(v) => {
+            setEmailCpf(v);
+            ValidoEmailCpf(v);
+          }}
         />
+        {emailCpfError ? <Text style={styles.fieldError}>{emailCpfError}</Text> : null}
 
         <TextInput
           style={styles.input}
@@ -61,7 +152,22 @@ export default function CreateAccountScreen() {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.primaryButton} onPress={handleCreateAccount}>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirmar senha"
+          placeholderTextColor="#7a8a97"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+        
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        <TouchableOpacity
+          style={[styles.primaryButton, !isFormValid && styles.disabledButton]}
+          onPress={CriarContaValida}
+          disabled={!isFormValid}
+        >
           <Text style={styles.primaryButtonText}>Cadastrar</Text>
         </TouchableOpacity>
 
@@ -133,7 +239,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
     fontSize: 16,
-    marginBottom: 12,
+    marginBottom: 6,
     borderWidth: 1,
     borderColor: "#e6f0fa",
     shadowColor: "#000",
@@ -141,6 +247,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 2,
     elevation: 2,
+  },
+  fieldError: {
+    color: "#c0392b",
+    fontSize: 13,
+    marginBottom: 8,
+    marginLeft: 6,
+  },
+  errorText: {
+    color: "#c0392b",
+    textAlign: "center",
+    marginBottom: 8,
   },
   primaryButton: {
     backgroundColor: "#0F4C75",
@@ -153,6 +270,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 4,
     elevation: 5,
+  },
+  disabledButton: {
+    backgroundColor: "#6b8aa6",
+    opacity: 0.9,
   },
   primaryButtonText: {
     color: "#fff",
